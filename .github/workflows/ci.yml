@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir -r requirements.txt
+
+      - name: Verify imports and model files load
+        run: |
+          python -c "import streamlit, pandas, numpy, sklearn, xgboost, joblib"
+          python -c "import joblib; joblib.load('models/xgboost_model.pkl'); print('model loads OK')"
+
+      - name: Build Docker image
+        run: docker build -t readmission-predictor-app .

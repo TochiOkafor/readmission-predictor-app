@@ -90,6 +90,20 @@ readmission-predictor-app/
 📄 **[View Full Model Card](model_card.md)** — comprehensive documentation of intended use, limitations, fairness assessment, and deployment recommendations
 
 ---
+## Deployment & CI
+
+This project is containerised and runs identically anywhere, with automated checks on every push.
+
+- **Docker** — the app, its dependencies and the trained model artifacts are packaged into a single image (`python:3.14-slim` base), so it runs the same on any machine with no separate setup step.
+- **GitHub Actions CI** — on every push, the pipeline installs dependencies from scratch, verifies all imports resolve, confirms the serialised model loads from disk, and builds the Docker image to prove the container is valid.
+- **Reproducible builds** — dependencies are pinned to exact versions, so the environment is identical today and months from now.
+
+**Run it with Docker:**
+```bash
+docker build -t readmission-predictor-app .
+docker run -p 8501:8501 readmission-predictor-app
+```
+Then open http://localhost:8501.
 
 ## Key Design Decisions
 
